@@ -41,7 +41,7 @@ export default function Dashboard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-blue-50 py-12 px-6"
+      className="min-h-screen py-12 px-6"
     >
       <div className="max-w-3xl mx-auto bg-white/70 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200">
         {/* Header */}

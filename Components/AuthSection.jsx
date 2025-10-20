@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Button } from "@/Components/ui/button";
-import { Mail, Lock, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase"; // ✅ your firebase config
+import { auth } from "@/lib/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -21,29 +21,49 @@ export default function AuthSection() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-
   const router = useRouter();
 
-  // ✅ Email/Password Authentication
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    setSuccess("");
+    setLoading(true);
 
     try {
+      if (!emailRegex.test(email)) throw new Error("Invalid email format.");
+      if (!passwordRegex.test(password))
+        throw new Error(
+          "Weak password: include upper, lower, number & special char."
+        );
+
       if (isSignUp) {
         if (password !== confirmPassword)
-          return setError("Passwords do not match.");
+          throw new Error("Passwords do not match.");
 
         await createUserWithEmailAndPassword(auth, email, password);
+        setSuccess("Sign up successful! Please sign in.");
+        setIsSignUp(false); // redirect to sign in
       } else {
         await signInWithEmailAndPassword(auth, email, password);
+        router.push("/dashboard");
       }
-
-      router.push("/dashboard");
     } catch (err) {
-      setError(err.message);
+      // Friendly Firebase errors
+      const msg =
+        err.code === "auth/email-already-in-use"
+          ? "This email is already registered."
+          : err.code === "auth/user-not-found"
+          ? "No account found with this email."
+          : err.code === "auth/wrong-password"
+          ? "Incorrect password. Try again."
+          : err.message;
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -56,12 +76,12 @@ export default function AuthSection() {
       await signInWithPopup(auth, provider);
       router.push("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError("Google sign-in failed: " + err.message);
     }
   };
 
   return (
-    <section className="w-full bg-gradient-to-b from-white to-amber-50 py-20 px-6 flex justify-center">
+    <section className="w-full py-20 px-6 flex justify-center">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -114,6 +134,7 @@ export default function AuthSection() {
             </div>
           )}
 
+          {/* Email */}
           <div className="relative">
             <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
             <input
@@ -126,6 +147,7 @@ export default function AuthSection() {
             />
           </div>
 
+          {/* Password */}
           <div className="relative">
             <Lock className="absolute left-3 top-3 text-gray-400" size={18} />
             <input
@@ -153,6 +175,9 @@ export default function AuthSection() {
           )}
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
+          {success && (
+            <p className="text-green-600 text-sm font-semibold">{success}</p>
+          )}
 
           <Button
             type="submit"

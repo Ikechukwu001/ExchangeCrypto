@@ -1,6 +1,6 @@
 // app/layout.js
 import "./globals.css";
-//import { Rajdhani } from "next/font/google";
+import Toaster from "react-hot-toast";
 
 export const metadata = {
   title: "FastExchange – Exchange Crypto Fast, Securely & Globally",
@@ -9,8 +9,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+   <html lang="en">
+      <body>
+        {children}
+        <Toaster position="top-right" reverseOrder={false} />
+      </body>
     </html>
   );
 }
