@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/Components/ui/button";
+import { Mail, Lock, User,} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
