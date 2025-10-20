@@ -5,7 +5,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import { Wallet, Bitcoin, LogOut } from "lucide-react";
 
 export default function Dashboard() {
