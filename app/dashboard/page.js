@@ -32,7 +32,7 @@ export default function Dashboard() {
   if (!user)
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-gray-500">Loading your dashboard...</p>
+        <p className="text-black text-4xl">Sign in / Sign Up to access Dashboard...</p>
       </div>
     );
 
