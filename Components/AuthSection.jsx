@@ -3,8 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Button } from "@/Components/ui/button";
-import { Mail, Lock, User, CheckCircle } from "lucide-react";
-import { XCircle } from "lucide-react"
+import { Mail, Lock, User, CheckCircle, XCircle } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
@@ -32,26 +31,21 @@ export default function AuthSection() {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  // ✅ Live email validation
   useEffect(() => {
     if (email === "") return setEmailValid(null);
     setEmailValid(emailRegex.test(email));
   }, [email]);
 
-  // ✅ Password strength logic
   useEffect(() => {
     if (password.length === 0) return setPasswordStrength("");
-
-    const strengthChecks = [
+    const checks = [
       password.length >= 8,
       /[A-Z]/.test(password),
       /[a-z]/.test(password),
       /\d/.test(password),
       /[@$!%*?&]/.test(password),
     ];
-
-    const passed = strengthChecks.filter(Boolean).length;
-
+    const passed = checks.filter(Boolean).length;
     if (passed <= 2) setPasswordStrength("weak");
     else if (passed === 3 || passed === 4) setPasswordStrength("medium");
     else setPasswordStrength("strong");
@@ -104,7 +98,7 @@ export default function AuthSection() {
   };
 
   return (
-    <section className="w-full py-16 px-6 flex justify-center">
+    <section className="flex justify-center items-center py-14 px-4">
       <AnimatePresence mode="wait">
         {!success ? (
           <motion.div
@@ -112,27 +106,24 @@ export default function AuthSection() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.6 }}
-            className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-8 text-white"
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-md bg-white/20 backdrop-blur-lg rounded-2xl shadow-lg p-6 sm:p-8"
           >
-            {/* Toggle */}
-            <div className="flex justify-center mb-8">
-              <button
-                onClick={() => setIsSignUp(false)}
-                className={`px-4 py-2 font-semibold transition-all ${
-                  !isSignUp ? "text-amber-400 border-b-2 border-amber-400" : "text-white hover:text-amber-300"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => setIsSignUp(true)}
-                className={`px-4 py-2 font-semibold transition-all ${
-                  isSignUp ? "text-amber-400 border-b-2 border-amber-400" : "text-white hover:text-amber-300"
-                }`}
-              >
-                Sign Up
-              </button>
+            {/* Toggle buttons */}
+            <div className="flex justify-center mb-6 space-x-6">
+              {["Sign In", "Sign Up"].map((label, i) => (
+                <button
+                  key={label}
+                  onClick={() => setIsSignUp(i === 1)}
+                  className={`text-base sm:text-lg font-semibold transition-all border-b-2 ${
+                    (i === 1 && isSignUp) || (i === 0 && !isSignUp)
+                      ? "text-amber-400 border-amber-400"
+                      : "text-white border-transparent hover:text-amber-300"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
 
             <motion.form
@@ -140,8 +131,8 @@ export default function AuthSection() {
               key={isSignUp ? "signup" : "signin"}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-5"
+              transition={{ duration: 0.4 }}
+              className="space-y-4"
             >
               {isSignUp && (
                 <div className="relative">
@@ -151,12 +142,12 @@ export default function AuthSection() {
                     placeholder="Full Name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full pl-10 pr-3 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    className="w-full pl-10 pr-3 py-3 rounded-xl bg-white/15 border border-white/20 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
                   />
                 </div>
               )}
 
-              {/* Email Field */}
+              {/* Email */}
               <div className="relative">
                 <Mail className="absolute left-3 top-3 text-white" size={18} />
                 <input
@@ -164,8 +155,7 @@ export default function AuthSection() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className={`w-full pl-10 pr-3 py-3 rounded-xl bg-white/10 border ${
+                  className={`w-full pl-10 pr-3 py-3 rounded-xl bg-white/15 border ${
                     emailValid === null
                       ? "border-white/20"
                       : emailValid
@@ -175,18 +165,9 @@ export default function AuthSection() {
                     emailValid ? "focus:ring-green-400" : "focus:ring-red-400"
                   }`}
                 />
-                {email && (
-                  <p
-                    className={`text-sm mt-1 ${
-                      emailValid ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
-                    {emailValid ? "Valid email ✅" : "Invalid email format ❌"}
-                  </p>
-                )}
               </div>
 
-              {/* Password Field */}
+              {/* Password */}
               <div className="relative">
                 <Lock className="absolute left-3 top-3 text-white" size={18} />
                 <input
@@ -194,47 +175,11 @@ export default function AuthSection() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className={`w-full pl-10 pr-3 py-3 rounded-xl bg-white/10 border ${
-                    passwordStrength === "strong"
-                      ? "border-green-400"
-                      : passwordStrength === "medium"
-                      ? "border-yellow-400"
-                      : passwordStrength === "weak" && password
-                      ? "border-red-400"
-                      : "border-white/20"
-                  } text-white placeholder:text-white focus:outline-none focus:ring-2 ${
-                    passwordStrength === "strong"
-                      ? "focus:ring-green-400"
-                      : passwordStrength === "medium"
-                      ? "focus:ring-yellow-400"
-                      : "focus:ring-red-400"
-                  }`}
+                  className="w-full pl-10 pr-3 py-3 rounded-xl bg-white/15 border border-white/20 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
 
-              {/* Password requirements */}
-              {isSignUp && password && (
-                <div className="text-xs space-y-1 mt-1">
-                  <p className={/[A-Z]/.test(password) ? "text-green-400" : "text-red-400"}>
-                    {/[A-Z]/.test(password) ? <CheckCircle /> : <XCircle />} At least one uppercase letter
-                  </p>
-                  <p className={/[a-z]/.test(password) ? "text-green-400" : "text-red-400"}>
-                    {/[a-z]/.test(password) ? <CheckCircle /> : <XCircle />} At least one lowercase letter
-                  </p>
-                  <p className={/\d/.test(password) ? "text-green-400" : "text-red-400"}>
-                    {/\d/.test(password) ? <CheckCircle /> : <XCircle />} At least one number
-                  </p>
-                  <p className={/[@$!%*?&]/.test(password) ? "text-green-400" : "text-red-400"}>
-                    {/[@$!%*?&]/.test(password) ? <CheckCircle /> : <XCircle />} One special character
-                  </p>
-                  <p className={password.length >= 8 ? "text-green-400" : "text-red-400"}>
-                    {password.length >= 8 ? <CheckCircle /> : <XCircle /> } Minimum 8 characters
-                  </p>
-                </div>
-              )}
-
-              {/* Confirm password */}
+              {/* Confirm Password */}
               {isSignUp && (
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 text-white" size={18} />
@@ -243,40 +188,32 @@ export default function AuthSection() {
                     placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className={`w-full pl-10 pr-3 py-3 rounded-xl bg-white/10 border ${
-                      confirmPassword && confirmPassword !== password
-                        ? "border-red-400"
-                        : confirmPassword
-                        ? "border-green-400"
-                        : "border-white/20"
-                    } text-white placeholder:text-white focus:outline-none`}
+                    className="w-full pl-10 pr-3 py-3 rounded-xl bg-white/15 border border-white/20 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
                   />
                 </div>
               )}
 
-              {error && <p className="text-red-400 text-sm">{error}</p>}
+              {error && <p className="text-red-300 text-sm">{error}</p>}
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-700 to-amber-500 hover:from-blue-800 hover:to-amber-600 text-white py-3 rounded-xl font-semibold transition-all shadow-md"
+                className="w-full bg-gradient-to-r from-blue-700 to-amber-500 hover:from-blue-800 hover:to-amber-600 text-white py-3 rounded-xl font-semibold shadow-md"
               >
                 {loading ? "Processing..." : isSignUp ? "Create Account" : "Sign In"}
               </Button>
 
-              {/* Divider */}
-              <div className="relative flex items-center justify-center my-4">
-                <div className="w-full h-px bg-white/20" />
+              <div className="flex items-center justify-center my-4">
+                <div className="w-full h-px bg-white/30" />
                 <span className="px-2 text-white text-sm">or</span>
-                <div className="w-full h-px bg-white/20" />
+                <div className="w-full h-px bg-white/30" />
               </div>
 
               <Button
                 type="button"
                 onClick={handleGoogleLogin}
                 variant="outline"
-                className="w-full flex items-center justify-center gap-2 border-white/30 text-black hover:bg-white/10 py-3 rounded-xl transition-all"
+                className="w-full flex items-center justify-center gap-2 border-white/40 text-white hover:bg-white/10 py-3 rounded-xl"
               >
                 <Image src="/GoogleIcon.jpeg" alt="Google" width={18} height={18} className="rounded-sm" />
                 Continue with Google
@@ -288,20 +225,12 @@ export default function AuthSection() {
             key="success"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center justify-center text-center bg-gradient-to-br from-blue-700 to-amber-500 text-white rounded-3xl p-10 w-full max-w-md shadow-2xl"
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center justify-center text-center bg-gradient-to-br from-blue-700 to-amber-500 text-white rounded-2xl p-10 w-full max-w-md"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 10 }}
-              className="mb-4"
-            >
-              <CheckCircle className="h-16 w-16 text-white drop-shadow-lg" />
-            </motion.div>
+            <CheckCircle className="h-16 w-16 text-white mb-4" />
             <h2 className="text-2xl font-bold mb-2">{isSignUp ? "Account Created!" : "Welcome Back!"}</h2>
-            <p className="text-blue-100 text-sm">Redirecting you to your dashboard...</p>
+            <p className="text-blue-100 text-sm">Redirecting to dashboard...</p>
           </motion.div>
         )}
       </AnimatePresence>
