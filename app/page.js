@@ -40,7 +40,7 @@ export default function Home() {
               Your gateway to digital finance starts here.
             </p>
 
-            <div className="max-w-md mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
+            <div className="max-w-md mx-auto bg-white/10 backdrop-blur-lg border border-white/20 p-6">
               <AuthSection />
             </div>
           </div>
