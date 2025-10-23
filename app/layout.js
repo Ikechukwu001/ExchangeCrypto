@@ -1,5 +1,5 @@
 import "./globals.css";
-import Toaster from "react-hot-toast";
+import { Toaster } from "react-hot-toast";  // ✅ fixed
 
 export const metadata = {
   title: "FastExchange – Exchange Crypto Fast, Securely & Globally",
@@ -17,7 +17,7 @@ export const metadata = {
   authors: [{ name: "FastExchange Team" }],
   creator: "IkechukwuFrontEnd",
   publisher: "FastExchange Inc.",
-  metadataBase: new URL("https://exchange-crypto1.vercel.app/"), // replace with your real domain
+  metadataBase: new URL("https://exchange-crypto1.vercel.app/"),
   alternates: {
     canonical: "https://exchange-crypto1.vercel.app/",
   },
@@ -29,7 +29,7 @@ export const metadata = {
     siteName: "FastExchange",
     images: [
       {
-        url: "https://fastexchange.com/og-image.png", // ✅ place this image in /public/og-image.jpg
+        url: "https://fastexchange.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "FastExchange Crypto Platform Preview",
@@ -52,12 +52,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Additional SEO + Social Meta */}
         <meta name="robots" content="index, follow" />
       </head>
       <body>
         {children}
-        <Toaster position="top-right" reverseOrder={false} />
+        <Toaster position="top-right" reverseOrder={false} />  {/* ✅ works correctly now */}
       </body>
     </html>
   );

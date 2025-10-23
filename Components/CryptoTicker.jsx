@@ -3,35 +3,83 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-// Temporary static data (we'll make it dynamic later)
-const defaultData = [
-  { symbol: "BTC/USD", price: "67,842.15", change: "+2.4%" },
-  { symbol: "ETH/USD", price: "3,254.30", change: "+1.9%" },
-  { symbol: "BNB/USD", price: "592.60", change: "-0.5%" },
-  { symbol: "SOL/USD", price: "162.45", change: "+3.2%" },
-  { symbol: "ADA/USD", price: "0.457", change: "-1.1%" },
-  { symbol: "XRP/USD", price: "0.622", change: "+0.8%" },
-  { symbol: "DOGE/USD", price: "0.152", change: "+4.5%" },
-  { symbol: "LTC/USD", price: "83.72", change: "-0.9%" },
-];
-
 export default function CryptoTicker() {
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState([]);
 
-  // Later: useEffect(() => fetch live crypto data here)
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Simulate small price changes for animation realism
-      setData((prev) =>
-        prev.map((coin) => {
-          const rand = (Math.random() * 0.4 - 0.2).toFixed(2);
-          const newPrice = (parseFloat(coin.price.replace(/,/g, "")) + parseFloat(rand)).toLocaleString();
-          return { ...coin, price: newPrice };
-        })
-      );
-    }, 4000);
+    const fetchPrices = async () => {
+      try {
+        const res = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,cardano,ripple,dogecoin,litecoin,sui&vs_currencies=usd&include_24hr_change=true"
+        );
+        const json = await res.json();
+
+        const formatted = [
+          {
+            symbol: "BTC/USD",
+            price: json.bitcoin.usd.toLocaleString(),
+            change: `${json.bitcoin.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "ETH/USD",
+            price: json.ethereum.usd.toLocaleString(),
+            change: `${json.ethereum.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "BNB/USD",
+            price: json.binancecoin.usd.toLocaleString(),
+            change: `${json.binancecoin.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "SOL/USD",
+            price: json.solana.usd.toLocaleString(),
+            change: `${json.solana.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "ADA/USD",
+            price: json.cardano.usd.toLocaleString(),
+            change: `${json.cardano.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "XRP/USD",
+            price: json.ripple.usd.toLocaleString(),
+            change: `${json.ripple.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "DOGE/USD",
+            price: json.dogecoin.usd.toLocaleString(),
+            change: `${json.dogecoin.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "LTC/USD",
+            price: json.litecoin.usd.toLocaleString(),
+            change: `${json.litecoin.usd_24h_change.toFixed(2)}%`,
+          },
+          {
+            symbol: "SUI/USD",
+            price: json.sui.usd.toLocaleString(),
+            change: `${json.sui.usd_24h_change.toFixed(2)}%`,
+          },
+        ];
+
+        setData(formatted);
+      } catch (error) {
+        console.error("Error fetching crypto data:", error);
+      }
+    };
+
+    fetchPrices();
+    const interval = setInterval(fetchPrices, 1000); // Refresh every 1s
     return () => clearInterval(interval);
   }, []);
+
+  if (data.length === 0) {
+    return (
+      <div className="w-full bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-3 text-center">
+        Loading crypto prices...
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-3 overflow-hidden border-t border-blue-700 shadow-inner">
@@ -49,9 +97,12 @@ export default function CryptoTicker() {
             <span className="text-amber-400 font-medium">${coin.price}</span>
             <span
               className={`text-sm ${
-                coin.change.startsWith("+") ? "text-green-400" : "text-red-400"
+                parseFloat(coin.change) >= 0
+                  ? "text-green-400"
+                  : "text-red-400"
               }`}
             >
+              {parseFloat(coin.change) >= 0 ? "+" : ""}
               {coin.change}
             </span>
           </div>

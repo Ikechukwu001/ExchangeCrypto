@@ -10,7 +10,7 @@ export default function Home() {
       {/* Header */}
       <CryptoHeader />
 
-      <main className="container mx-auto px-4 py-8 space-y-16">
+      <main className="container mx-auto space-y-16">
         {/* Hero Section */}
         <Hero />
 
