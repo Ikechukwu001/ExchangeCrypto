@@ -47,7 +47,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <p className="text-gray-400 text-sm">Hello, good morning 👋</p>
+            <p className="text-gray-400 text-sm">Hello</p>
             <h1 className="text-lg font-semibold text-white">
               {user.displayName || user.email}
             </h1>
@@ -97,7 +97,7 @@ export default function Dashboard() {
             >
               <p className="font-semibold text-white">BTC</p>
               <p className="text-sm text-gray-400">Bitcoin</p>
-              <p className="mt-2 text-lg font-bold">$67,842.15</p>
+              <p className="mt-2 text-lg font-bold">$678.15</p>
               <p className="text-green-400 text-xs mt-1">+2.4%</p>
             </motion.div>
 
