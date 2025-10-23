@@ -79,7 +79,7 @@ export default function AuthSection() {
   };
 
   return (
-    <section className="relative flex flex-col items-center justify-center py-20 px-6 overflow-hidden text-center">
+    <section className="relative flex flex-col items-center justify-center py-2 px-2 overflow-hidden text-center">
       {/* Floating crypto icons background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.img
