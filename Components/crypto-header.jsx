@@ -69,9 +69,9 @@ export default function CryptoHeader() {
           {/* Menu Links */}
           <nav className="flex flex-col space-y-6 text-lg font-medium text-gray-800">
             <Link href="/" onClick={() => setMenuOpen(false)} className="hover:text-amber-500 transition">Home</Link>
-            <Link href="/features" onClick={() => setMenuOpen(false)} className="hover:text-amber-500 transition">Features</Link>
-            <Link href="/about" onClick={() => setMenuOpen(false)} className="hover:text-amber-500 transition">About</Link>
-            <Link href="/contact" onClick={() => setMenuOpen(false)} className="hover:text-amber-500 transition">Contact</Link>
+            <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="hover:text-amber-500 transition">Features</Link>
+            <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="hover:text-amber-500 transition">About</Link>
+            <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="hover:text-amber-500 transition">Contact</Link>
           </nav>
 
           {/* CTA */}
